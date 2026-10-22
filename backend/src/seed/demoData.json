@@ -1,0 +1,167 @@
+[
+  {
+    "id": "DEMO-READY-2026",
+    "adminKey": "ADM-DEMO-001",
+    "title": "致小芸与家人的信：资产交代与心底话",
+    "recipientName": "爱妻小芸与儿子辰辰",
+    "unlockAt": 1792563441513,
+    "createdAt": 1792045041513,
+    "updatedAt": 1792606641513,
+    "password": "123456",
+    "passwordHint": "我们第一次旅行的年份（测试密码：123456）",
+    "status": "active",
+    "payload": {
+      "letter": {
+        "title": "致我最深爱的人们：一段心里话与所有重要交代",
+        "recipient": "爱妻小芸与儿子辰辰",
+        "opening": "展信佳，见字如晤。当你输入密码看到这封信时，请先深呼吸，不要害怕。",
+        "body": "生命是一场旅途，我这一生最大的幸运便是遇见了你，并陪伴辰辰成长。这封信不仅是我对你们深沉的留恋与祝福，更是一份详尽的生活后盾清单。\n\n我把家里所有银行卡、证券、理财账户以及家中隐藏物品的密码与位置全部梳理在此。哪怕未来我不在身边，我也希望你们衣食无忧、生活从容。\n\n辰辰，爸爸希望你成长为一个真诚、勇敢且有担当的人；小芸，不要沉浸在悲伤中，去感受阳光、去看山河，带着我的那一份热爱继续幸福生活。",
+        "closing": "深爱你们的：家明"
+      },
+      "bankAccounts": [
+        {
+          "id": "acc-1",
+          "bankName": "招商银行（工资与生活主卡）",
+          "accountNumber": "6225 8801 9283 4401",
+          "accountHolder": "李家明",
+          "approxAmount": "活期约 ¥85,000 + 招银朝朝宝理财约 ¥120,000",
+          "passcodeHint": "取款密码为辰辰生日6位数（201809）",
+          "remarks": "手机招商银行App已设置免密指纹，若无法登入可用手机号验证码重置"
+        },
+        {
+          "id": "acc-2",
+          "bankName": "中国工商银行（大额存单与房贷还款卡）",
+          "accountNumber": "6222 0210 0019 8832",
+          "accountHolder": "李家明",
+          "approxAmount": "三年期定期存单 ¥300,000（2027年11月到期）",
+          "passcodeHint": "密码同招行卡，U盾在书房办公桌右侧第二层带锁抽屉",
+          "remarks": "到期自动转存，网点办理需携带存折原件、结婚证与户口本"
+        },
+        {
+          "id": "acc-3",
+          "bankName": "中信证券（股票与ETF基金账户）",
+          "accountNumber": "资金账号：88291044",
+          "accountHolder": "李家明",
+          "approxAmount": "市值约 ¥210,000（以沪深300及高股息红利ETF为主）",
+          "passcodeHint": "交易密码：668822，资金转出密码同理",
+          "remarks": "工作日交易时间可直接银证转账至招商银行主卡"
+        }
+      ],
+      "physicalItems": [
+        {
+          "id": "item-1",
+          "category": "safe",
+          "itemName": "主卧暗嵌家用保险箱",
+          "exactLocation": "主卧步入式衣帽间最深处，移开悬挂长风衣下方的三层抽屉后侧木质暗板",
+          "accessMethod": "密码为【0912#】，备用应急十字锁孔钥匙在梳妆台右下角首饰盒底座夹层",
+          "notes": "内含房产证原件、金条200g、应急备用现金5万元及家庭户口簿"
+        },
+        {
+          "id": "item-2",
+          "category": "deeds",
+          "itemName": "房产证、土地确权书与购房发票合同",
+          "exactLocation": "书房实木书架第三层，精装《辞海》后方的牛皮纸档案袋内",
+          "accessMethod": "直接取出档案袋（印有\"家宅档案\"字样）",
+          "notes": "包括我们现在居住的翠湖湾房产以及老家安置房所有产权证明"
+        },
+        {
+          "id": "item-3",
+          "category": "keys",
+          "itemName": "备用防盗门钥匙、车库门禁与汽车备用车钥匙",
+          "exactLocation": "入户玄关强电箱盖内侧，采用强力磁吸挂钩吸附在铁门内壁",
+          "accessMethod": "推开电闸箱盖即可取下",
+          "notes": "包含黑色特斯拉卡片钥匙1张、沃尔沃实体机械备用钥匙1把"
+        }
+      ],
+      "digitalAccounts": [
+        {
+          "id": "dig-1",
+          "platform": "主力手机（iPhone 15 Pro）",
+          "username": "138****8899",
+          "passwordHint": "锁屏数字密码：940821（支持人脸识别）",
+          "disposalPreference": "千万保留该手机SIM卡，接收所有银行动账及各大平台登录验证码"
+        },
+        {
+          "id": "dig-2",
+          "platform": "微信与微信支付",
+          "username": "WeChat: ming_light",
+          "passwordHint": "支付密码为：201809（微众银行零钱通里尚有约 ¥18,000）",
+          "disposalPreference": "重要亲友联络人都在里面，可留存留念"
+        },
+        {
+          "id": "dig-3",
+          "platform": "苹果 iCloud / 百度网盘家庭相册",
+          "username": "apple-id: jiaming@icloud.com",
+          "passwordHint": "密码：Jiaming#2026!（已将小芸设置为iCloud遗产联系人）",
+          "disposalPreference": "珍藏了全家十多年来所有旅游、孩子百天与日常生活照片原图，永久保存"
+        }
+      ],
+      "finalWishes": {
+        "funeralPreference": "崇尚自然与极简，拒绝铺张大操大办。希望在近郊举行温馨小型家庭追思告别，遗体火化后选择树葬或海葬，播放一曲《Canon in D》即可。",
+        "medicalDirectives": "【生前预嘱】若生命不可逆进入终末期，我明确要求放弃任何有创插管、气管切开、心脏电击等延长痛苦的过度救治。允许我平静、有尊严、无痛苦地离开这个世界。",
+        "organDonation": "本人已在“中国人体器官捐献管理中心”登记为志愿捐献者（卡号：D-2023-88910），若条件允许，望能将有用器官捐献给急需之人，回馈人间。",
+        "petCare": "家里的边牧“奥利奥”性情温顺，请小芸继续抚养它，若精力有限，可托付给在松江有院子的表弟张伟，已在招行账户为其备足养育基金。",
+        "subscriptions": [
+          {
+            "id": "sub-demo-1",
+            "serviceName": "苹果 iCloud 2TB 家庭共享及音乐连续包月",
+            "deductSource": "招行卡自动代扣",
+            "actionPlan": "登入手机设置取消订阅即可停止月扣"
+          }
+        ],
+        "specialInstructions": "如有任何法律继承或公证相关疑问，可咨询我的多年老友兼法律顾问陈律师（电话：139-0012-3456），他会全力协助办理合法继承公证手续。"
+      }
+    }
+  },
+  {
+    "id": "TIME-LOCKED-DEMO",
+    "adminKey": "ADM-FUTURE-002",
+    "title": "致二十年后的女儿：未来保险箱与成长寄语",
+    "recipientName": "我最亲爱的女儿 诺诺",
+    "unlockAt": 1824185841513,
+    "createdAt": 1792477041513,
+    "updatedAt": 1792477041513,
+    "password": "demo2026",
+    "passwordHint": "未来年份标记（测试密码：demo2026）",
+    "status": "active",
+    "payload": {
+      "letter": {
+        "title": "女儿，当你长成亭亭玉立的大姑娘时打开这封信",
+        "recipient": "宝贝女儿 诺诺",
+        "opening": "亲爱的诺诺：当你终于等到时间锁解开的这一刻，你一定已经长大成人了。",
+        "body": "这是爸爸在许多年前为你设立的时间胶囊保险箱。这里封存着你出生时的第一张脚印卡、我为你存下的一笔成年成长基金，还有我为你准备的一封沉甸甸的长信。\n\n时间会流淌，但爱永不褪色。",
+        "closing": "永远默默注视你、爱你的爸爸"
+      },
+      "bankAccounts": [
+        {
+          "id": "acc-future-1",
+          "bankName": "教育信托基金及定投账户",
+          "accountNumber": "信托合同编号：XT-2024-NUO88",
+          "accountHolder": "李诺诺（受益人）",
+          "approxAmount": "约定到期支取约 ¥500,000",
+          "passcodeHint": "凭女儿身份证原件及信托密码即可至中信信托办理兑付",
+          "remarks": "专用于大学毕业后的创业基金或深造基金"
+        }
+      ],
+      "physicalItems": [
+        {
+          "id": "item-future-1",
+          "category": "sentimental",
+          "itemName": "18岁成年礼封存木盒与纪念信件",
+          "exactLocation": "老家阁楼樟木箱最底层，包裹于红色丝绒布内",
+          "accessMethod": "小铜锁钥匙串在妈妈常戴的那串银手镯内侧吊坠里",
+          "notes": "里面有你儿时的乳牙盒、周岁抓周小物件与录音带"
+        }
+      ],
+      "digitalAccounts": [],
+      "finalWishes": {
+        "funeralPreference": "",
+        "medicalDirectives": "",
+        "organDonation": "",
+        "petCare": "",
+        "subscriptions": [],
+        "specialInstructions": ""
+      }
+    }
+  }
+]

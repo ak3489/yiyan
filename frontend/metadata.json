@@ -1,0 +1,6 @@
+{
+  "name": "时光遗嘱·数字财产与遗言信标",
+  "description": "专业数字遗产与财产托付平台。支持银行卡、藏匿物品位置、数字账号与深情遗言的结构化引导录入，具备服务器防篡改时间锁与双重密码保护，立嘱人随时凭管理秘钥修改与撤回。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

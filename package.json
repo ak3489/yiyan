@@ -1,0 +1,19 @@
+{
+  "name": "yiyan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "时光遗嘱·数字财产与遗言信标 —— 前后端分离项目（frontend + backend）",
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install --legacy-peer-deps",
+    "dev": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "seed": "npm --prefix backend run seed",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend run start",
+    "lint": "npm --prefix frontend run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

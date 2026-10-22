@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Noto Serif SC', 'Playfair Display', "Songti SC", "SimSun", serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  body {
+    background-color: #fbf9f5;
+    color: #1c1917;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, .font-serif-title {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Paper texture and letterhead styles */
+.paper-stationery {
+  background-color: #ffffff;
+  background-image: radial-gradient(#e7e5e4 0.75px, transparent 0.75px);
+  background-size: 24px 24px;
+}
+
+.letterhead-rule {
+  border-left: 2px solid #b91c1c;
+  padding-left: 1.25rem;
+}
+
+/* Print mode optimization */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
