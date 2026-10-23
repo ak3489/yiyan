@@ -24,6 +24,9 @@ interface UnlockPortalProps {
   onGoCreate: () => void;
 }
 
+const SECTION_KEYS = ['letter', 'banks', 'physical', 'digital', 'wishes'] as const;
+type SectionKey = (typeof SECTION_KEYS)[number];
+
 export const UnlockPortal: React.FC<UnlockPortalProps> = ({
   initialId = '',
   initialPassword = '',
@@ -35,8 +38,8 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [unlockResult, setUnlockResult] = useState<UnlockResponse | null>(null);
 
-  // Active viewing tab when unlocked
-  const [activeTab, setActiveTab] = useState<'letter' | 'banks' | 'physical' | 'digital' | 'wishes'>('letter');
+  // 当前高亮的章节（仅用于目录高亮；所有章节始终全部显示）
+  const [activeSection, setActiveSection] = useState<SectionKey>('letter');
   const [copiedKey, setCopiedKey] = useState<string>('');
 
   // Server-authoritative countdown states
@@ -85,6 +88,41 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
     return () => clearInterval(interval);
   }, [unlockResult]);
 
+  // 滚动监听：根据当前可视章节高亮目录项
+  useEffect(() => {
+    if (!unlockResult?.success) return;
+
+    const elements = SECTION_KEYS.map(key => document.getElementById('section-' + key)).filter(
+      (el): el is HTMLElement => el !== null
+    );
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) {
+          const key = visible[0].target.getAttribute('data-section');
+          if (key) setActiveSection(key as SectionKey);
+        }
+      },
+      { rootMargin: '-120px 0px -60% 0px', threshold: 0 }
+    );
+
+    elements.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, [unlockResult?.success]);
+
+  // 点击目录：滚动到对应章节
+  const scrollToSection = (key: SectionKey) => {
+    setActiveSection(key);
+    const el = document.getElementById('section-' + key);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const handleUnlockAttempt = async (idToUse?: string, passToUse?: string) => {
     const id = (idToUse || capsuleId).trim();
     const pass = (passToUse || password).trim();
@@ -104,7 +142,7 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
       const res = await unlockCapsule(id, pass);
       setUnlockResult(res);
       if (res.success) {
-        setActiveTab('letter');
+        setActiveSection('letter');
       }
     } catch (err: any) {
       setErrorMsg(err.message || '解密失败，请核实编号与密码');
@@ -125,6 +163,39 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
   };
 
   const payload: TestamentPayload | undefined = unlockResult?.payload;
+
+  const sectionNav: Array<{
+    key: SectionKey;
+    label: string;
+    count: number | string | null;
+    icon: React.ReactNode;
+  }> = [
+    {
+      key: 'letter',
+      label: '深情长信',
+      count: payload?.letter.body ? '完整' : '0',
+      icon: <Heart className="w-3.5 h-3.5" />
+    },
+    {
+      key: 'banks',
+      label: '银行、保单与资产',
+      count: payload?.bankAccounts?.length || 0,
+      icon: <CreditCard className="w-3.5 h-3.5" />
+    },
+    {
+      key: 'physical',
+      label: '重要物品与钥匙位置',
+      count: payload?.physicalItems?.length || 0,
+      icon: <MapPin className="w-3.5 h-3.5" />
+    },
+    {
+      key: 'digital',
+      label: '手机与数字账号',
+      count: payload?.digitalAccounts?.length || 0,
+      icon: <Smartphone className="w-3.5 h-3.5" />
+    },
+    { key: 'wishes', label: '后事愿望与生前预嘱', count: null, icon: <FileText className="w-3.5 h-3.5" /> }
+  ];
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -337,72 +408,40 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
             </div>
           </div>
 
-          {/* Navigation Tabs (no-print) */}
-          <div className="no-print flex items-center gap-2 border-b border-stone-200 pb-2 overflow-x-auto">
-            <button
-              onClick={() => setActiveTab('letter')}
-              className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'letter'
-                  ? 'bg-stone-900 text-white font-semibold shadow-xs'
-                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-              }`}
-            >
-              <Heart className="w-3.5 h-3.5" />
-              <span>深情长信 ({payload.letter.body ? '完整' : '0'})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('banks')}
-              className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'banks'
-                  ? 'bg-stone-900 text-white font-semibold shadow-xs'
-                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-              }`}
-            >
-              <CreditCard className="w-3.5 h-3.5" />
-              <span>银行、保单与资产 ({payload.bankAccounts?.length || 0})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('physical')}
-              className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'physical'
-                  ? 'bg-stone-900 text-white font-semibold shadow-xs'
-                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-              }`}
-            >
-              <MapPin className="w-3.5 h-3.5" />
-              <span>重要物品与钥匙位置 ({payload.physicalItems?.length || 0})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('digital')}
-              className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'digital'
-                  ? 'bg-stone-900 text-white font-semibold shadow-xs'
-                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-              }`}
-            >
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>手机与数字账号 ({payload.digitalAccounts?.length || 0})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('wishes')}
-              className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'wishes'
-                  ? 'bg-stone-900 text-white font-semibold shadow-xs'
-                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>后事愿望与生前预嘱</span>
-            </button>
+          {/* 目录导航：全部章节始终展示，点击仅滚动定位（打印时隐藏） */}
+          <div className="no-print sticky top-16 z-30 py-2 bg-[#fbf9f5]/95 backdrop-blur-md border-b border-stone-200">
+            <div className="flex items-center gap-2 overflow-x-auto">
+              <span className="hidden sm:inline text-[11px] text-stone-400 whitespace-nowrap shrink-0">
+                快速定位：
+              </span>
+              {sectionNav.map(item => (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => scrollToSection(item.key)}
+                  aria-current={activeSection === item.key ? 'true' : undefined}
+                  className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                    activeSection === item.key
+                      ? 'bg-stone-900 text-white font-semibold shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                  }`}
+                >
+                  {item.icon}
+                  <span>
+                    {item.label}
+                    {item.count !== null ? ` (${item.count})` : ''}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* TAB 1: LETTER (Traditional Stationery Letterhead Look) */}
-          {(activeTab === 'letter' || true) && (
-            <div className={`p-8 sm:p-12 bg-white border border-stone-200/90 rounded-2xl shadow-sm space-y-6 ${activeTab !== 'letter' ? 'hidden print:block' : ''}`}>
+          {/* 1. 深情长信 */}
+          <section
+            id="section-letter"
+            data-section="letter"
+            className="scroll-mt-32 p-8 sm:p-12 bg-white border border-stone-200/90 rounded-2xl shadow-sm space-y-6 print:border-0 print:shadow-none print:p-0"
+          >
               <div className="border-b border-stone-200 pb-5">
                 <div className="text-xs text-red-800 font-mono font-semibold tracking-wider mb-1">LETTERHEAD ARCHIVE</div>
                 <h3 className="text-2xl font-serif font-bold text-stone-900">
@@ -426,12 +465,10 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
                   —— {payload.letter.closing}
                 </div>
               )}
-            </div>
-          )}
+          </section>
 
-          {/* TAB 2: BANK ACCOUNTS & INSURANCES */}
-          {(activeTab === 'banks' || false) && (
-            <div className={`space-y-6 ${activeTab !== 'banks' ? 'hidden print:block' : ''}`}>
+          {/* 2. 银行账户、保单与资产 */}
+          <section id="section-banks" data-section="banks" className="scroll-mt-32 space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-serif font-bold text-stone-900 flex items-center gap-2">
                   <CreditCard className="w-4 h-4 text-red-800" />
@@ -444,7 +481,7 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
                 {payload.bankAccounts?.map((acc, index) => (
                   <div
                     key={acc.id || index}
-                    className="p-5 bg-white border border-stone-200 rounded-xl space-y-3 shadow-xs"
+                    className="print-avoid-break p-5 bg-white border border-stone-200 rounded-xl space-y-3 shadow-xs"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-100 pb-3">
                       <div>
@@ -543,12 +580,10 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
                   </div>
                 )}
               </div>
-            </div>
-          )}
+          </section>
 
-          {/* TAB 3: PHYSICAL ITEMS & KEYS */}
-          {(activeTab === 'physical' || false) && (
-            <div className={`space-y-4 ${activeTab !== 'physical' ? 'hidden print:block' : ''}`}>
+          {/* 3. 重要物品与钥匙位置 */}
+          <section id="section-physical" data-section="physical" className="scroll-mt-32 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-serif font-bold text-stone-900 flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-red-800" />
@@ -560,7 +595,7 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
                 {payload.physicalItems?.map((item, index) => (
                   <div
                     key={item.id || index}
-                    className="p-5 bg-white border border-stone-200 rounded-xl space-y-3 shadow-xs"
+                    className="print-avoid-break p-5 bg-white border border-stone-200 rounded-xl space-y-3 shadow-xs"
                   >
                     <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                       <div className="flex items-center gap-2">
@@ -595,12 +630,10 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+          </section>
 
-          {/* TAB 4: DIGITAL ACCOUNTS */}
-          {(activeTab === 'digital' || false) && (
-            <div className={`space-y-4 ${activeTab !== 'digital' ? 'hidden print:block' : ''}`}>
+          {/* 4. 手机与数字账号 */}
+          <section id="section-digital" data-section="digital" className="scroll-mt-32 space-y-4">
               <h3 className="text-base font-serif font-bold text-stone-900 flex items-center gap-2">
                 <Smartphone className="w-4 h-4 text-red-800" />
                 <span>手机锁屏、微信与数字资产 ({payload.digitalAccounts?.length || 0})</span>
@@ -610,7 +643,7 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
                 {payload.digitalAccounts?.map((dig, index) => (
                   <div
                     key={dig.id || index}
-                    className="p-4 bg-white border border-stone-200 rounded-xl space-y-2 text-xs shadow-xs"
+                    className="print-avoid-break p-4 bg-white border border-stone-200 rounded-xl space-y-2 text-xs shadow-xs"
                   >
                     <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                       <span className="font-bold text-stone-900 text-sm">{dig.platform}</span>
@@ -638,12 +671,14 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+          </section>
 
-          {/* TAB 5: WISHES */}
-          {(activeTab === 'wishes' || false) && (
-            <div className={`p-6 bg-white border border-stone-200 rounded-2xl space-y-4 shadow-xs ${activeTab !== 'wishes' ? 'hidden print:block' : ''}`}>
+          {/* 5. 后事愿望与生前预嘱 */}
+          <section
+            id="section-wishes"
+            data-section="wishes"
+            className="scroll-mt-32 p-6 bg-white border border-stone-200 rounded-2xl space-y-4 shadow-xs print:border-0 print:shadow-none print:p-0"
+          >
               <h3 className="text-base font-serif font-bold text-stone-900 flex items-center gap-2 border-b border-stone-100 pb-3">
                 <FileText className="w-4 h-4 text-red-800" />
                 <span>后事丧葬、生前预嘱与宠物托付愿望</span>
@@ -651,7 +686,7 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
 
               <div className="space-y-4 text-xs">
                 {payload.finalWishes?.medicalDirectives && (
-                  <div className="p-4 bg-amber-50/70 rounded-xl border border-amber-200">
+                    <div className="print-avoid-break p-4 bg-amber-50/70 rounded-xl border border-amber-200">
                     <span className="font-bold text-amber-950 block mb-1">
                       【生前预嘱】终末期救治意向（放弃过度抢救 · 尊严死）
                     </span>
@@ -661,36 +696,35 @@ export const UnlockPortal: React.FC<UnlockPortalProps> = ({
                   </div>
                 )}
 
-                <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
+                <div className="print-avoid-break p-4 bg-stone-50 rounded-xl border border-stone-200">
                   <span className="font-bold text-stone-900 block mb-1">告别仪式与安葬形式意愿</span>
                   <p className="text-stone-700 leading-relaxed text-sm">
                     {payload.finalWishes?.funeralPreference || '由家属依当地习俗简办即可。'}
                   </p>
                 </div>
 
-                <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
+                <div className="print-avoid-break p-4 bg-stone-50 rounded-xl border border-stone-200">
                   <span className="font-bold text-stone-900 block mb-1">器官与遗体捐献意向</span>
                   <p className="text-stone-700 leading-relaxed text-sm">
                     {payload.finalWishes?.organDonation || '无特殊意向。'}
                   </p>
                 </div>
 
-                <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
+                <div className="print-avoid-break p-4 bg-stone-50 rounded-xl border border-stone-200">
                   <span className="font-bold text-stone-900 block mb-1">宠物托付与照料基金</span>
                   <p className="text-stone-700 leading-relaxed text-sm">
                     {payload.finalWishes?.petCare || '无宠物托付。'}
                   </p>
                 </div>
 
-                <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
+                <div className="print-avoid-break p-4 bg-stone-50 rounded-xl border border-stone-200">
                   <span className="font-bold text-stone-900 block mb-1">特别交代与法律顾问</span>
                   <p className="text-stone-700 leading-relaxed text-sm">
                     {payload.finalWishes?.specialInstructions || '无。'}
                   </p>
                 </div>
               </div>
-            </div>
-          )}
+          </section>
 
           {/* Bottom Back Button */}
           <div className="no-print pt-6 flex justify-between items-center text-xs text-stone-500">

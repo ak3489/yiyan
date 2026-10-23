@@ -31,7 +31,7 @@ export const Hero: React.FC<HeroProps> = ({
   onApplyAntiForgetItem
 }) => {
   const [serverTimeStr, setServerTimeStr] = useState<string>('同步中...');
-  const [showDemoDrawer, setShowDemoDrawer] = useState<boolean>(false);
+  const [showDemoDrawer, setShowDemoDrawer] = useState<boolean>(true);
 
   useEffect(() => {
     let timer: any;

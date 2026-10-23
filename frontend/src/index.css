@@ -33,15 +33,62 @@
 }
 
 /* Print mode optimization */
+@page {
+  size: A4;
+  margin: 14mm 12mm;
+}
+
 @media print {
+  html,
   body {
-    background-color: #ffffff !important;
+    background: #ffffff !important;
     color: #1a1a1a !important;
+    min-height: auto !important;
   }
+
   .no-print {
     display: none !important;
   }
+
   .print-only {
     display: block !important;
+  }
+
+  /* 保留背景色、印章与徽标等视觉元素 */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 允许内容跨页连续输出，避免整块被裁切 */
+  main,
+  section,
+  article {
+    overflow: visible !important;
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  /* 小卡片尽量不跨页拆分 */
+  .print-avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* 打印时隐藏链接地址等多余装饰 */
+  a[href]::after {
+    content: "" !important;
+  }
+
+  section[id^="section-"] {
+    scroll-margin-top: 0 !important;
   }
 }
